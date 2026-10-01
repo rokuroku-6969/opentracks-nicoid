@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "OpenTracks(旧DOVA-SYNDROME) ニコニコ親作品ID追加くん",
+  "description": "OpenTracks(旧DOVA-SYNDROME)から音源をダウンロードする際、詳細ページにニコニコ動画の親作品IDがあれば、ファイル名にIDを追加できる機能です。タイトル・親作品ID・作曲者名に対応しています。",
+  "version": "1.0",
+  "permissions": [
+    "downloads",
+    "storage"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://opentracks.com/bgm/detail/*"
+      ],
+      "js": [
+        "content.js"
+      ]
+    }
+  ],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
