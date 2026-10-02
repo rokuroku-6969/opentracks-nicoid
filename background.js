@@ -1,6 +1,8 @@
 const DEFAULT_PATTERN = '${title}_${Id}';
 const DEFAULT_NO_ID_PATTERN = '${title}';
 
+const TARGET_DOMAIN = 'https://opentracks.com/'
+
 // ファイル名に使えない記号を大文字に置換する関数
 function replaceSpecialChars(filename) {
   const chars = {
@@ -22,6 +24,7 @@ function replaceSpecialChars(filename) {
   return filename;
 }
 
+// optionsとbackgroundの送受信処理
 // ファイルのパターンを受け取り各処理に分ける
 browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // パターンを呼び出す
@@ -47,6 +50,15 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // ダウンロード実行時
 browser.downloads.onDeterminingFilename.addListener((item, suggest) => {
+  const isTargetUrl = (item.url && item.url.includes(TARGET_DOMAIN)) ||
+    (item.referrer && item.referrer.includes(TARGET_DOMAIN));
+
+  // 対象サイト以外からのダウンロードの場合は何もせずにスキップ
+  if (!isTargetUrl) {
+    suggest();
+    return true;
+  }
+
   // 保存された文字列とユーザーの設定パターンを取得
   browser.storage.local.get(
     ['savedNicoId', 'savedComposerName', 'filePatternWithId', 'filePatternNoId'],
@@ -97,9 +109,6 @@ browser.downloads.onDeterminingFilename.addListener((item, suggest) => {
 
       // 新しいファイル名を適用
       suggest({ filename: newFileName });
-
-      // 一度適用したら情報をクリア
-      browser.storage.local.remove(['savedNicoId', 'savedComposerName']);
     }
   );
 
