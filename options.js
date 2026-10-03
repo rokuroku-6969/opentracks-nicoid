@@ -6,7 +6,7 @@ const changePatternOption = () => {
   const pattern = document.getElementById('patternWithId').value.trim() || DEFAULT_PATTERN;
   const noIdPattern = document.getElementById('patternNoId').value.trim() || DEFAULT_NO_ID_PATTERN;
 
-  browser.runtime.sendMessage({
+  chrome.runtime.sendMessage({
     'content': 'savePattern',
     'filePatternWithId': pattern,
     'filePatternNoId': noIdPattern,
@@ -15,7 +15,7 @@ const changePatternOption = () => {
 
 // オプション画面の読み込み時処理
 document.addEventListener('DOMContentLoaded', () => {
-  browser.runtime.sendMessage(
+  chrome.runtime.sendMessage(
     {
       'content': 'getPattern'
     },
